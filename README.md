@@ -20,7 +20,7 @@ nsearch(/mysql/).map(function (description,n) { return n + " : " + description }
 // with line numbering
 
 nsearch.num()
-// Print previous results with a line number
+// Print previous results with line numbers
 
 nsearch.details(4)
 // details about the 4 entry: dbslayer
