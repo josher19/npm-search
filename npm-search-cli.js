@@ -3,6 +3,6 @@ var shortcut = {'d': 'details', 'a':'author', 'kw':'keywords', 'au':'author', 'k
 function kword(a) { return shortcut[a] || a }
 var search = npmsearch[kword(process.argv[3])] || npmsearch
 console.info(process.argv.join(" ") + "\n")
-var res=search(process.argv[2])
+var res=search(process.argv[2] || "npm")
 console.info(npmsearch.num().join("\n") || res)
 // console.info(res)

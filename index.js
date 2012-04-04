@@ -94,6 +94,8 @@ nsearch.author = function(q) { return nsearch.last = nsearch.entries(function(ke
 /** Web address of last result. */
 nsearch.web = function(d) { var r=nsearch.details(d).repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
 
+nsearch.search = nsearch
+
 // cli = -> while readline : grab(line)
 // while (line = readline()) { sys.puts(nsearch.grab(line)) }
   
