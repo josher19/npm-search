@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 cd `dirname $0`
-node ../npm-search-cli.js $@
+cli=cli
+test x"$1" = x"shell" && cli=line && shift
+node ../npm-search-${cli}.js $@
