@@ -53,11 +53,11 @@ nsearch.ncache = function() { return ncache; }
 nsearch.details = function (d) { if (null==d) d=nsearch.n; if (!d.split) d=nsearch.last[nsearch.n=d]||nsearch.last[0]||''; d=d.split(" : ")[0];  return ncache[d] }
 
 /** Show last results with numbers */
-nsearch.num = function (q) { if (q) nsearch(q); return nsearch.last.map(function(it,n) { return n + " : " + it; }); }
+nsearch.num = function () { return nsearch.last.map(function(it,n) { return n + " : " + it; }); }
 
-nsearch.cur = function () { nsearch.n %= nsearch.last.length; return nsearch.last[nsearch.n]; }
+nsearch.cur = function () { nsearch.n %= (nsearch.last.length||1); return nsearch.last[nsearch.n]; }
 /** Next search results */
-nsearch.next = function(m) { nsearch.n += (m||1); return nsearch.cur(); }
+nsearch.next = function(m) { nsearch.n += (m-0||1); return nsearch.cur(); }
 /** Previous search results */
 nsearch.prev = function(m) { if (nsearch.n < 1) nsearch.n += nsearch.last.length; return nsearch.next(-m||-1); }
 
@@ -69,21 +69,41 @@ nsearch.pluck = function (a) { return pluck(ncache, a).filter(function (it) { re
 /** Author name or name of first maintainers */
 function getAuthor(my) { return my.author || first(my.maintainers); }
 
-/** Top NPM authors. */
-nsearch.authorCount = function authorCount() {
+/** Top n NPM authors. */
+nsearch.authorCount = function authorCount(n) {
+	var numAuthors = n - 0;
 	var res= keyz.map(function(p) { var a=getAuthor(ncache[p]); return a ? a.name || a : a }); 
 	var c=counter(res)
 	var p, r=[]; for(p in c) { var cnt = c[p]; r.push([cnt,p]); } 
 	var r=r.sort( function(a,b) { return b[0]-a[0] }); 
+	if (numAuthors &&  r.length > numAuthors) { 
+		process.stdout.write("Limit " + numAuthors + "\n"); 
+		r.length = numAuthors; 
+	}
 	return r;
 }
 
 /** Show Readme if available */
 nsearch.readme = function (d) { var item = nsearch.details(d); process.stdout.write(item.description+'\n'); if (item.readme) process.stdout.write(item.readme + '\n'); return nsearch.next; }
 
-function noop(k,v,i) { return i < 100 && v; }
+function noop(k,v,i,len) { return i < 100 && v; }
 
-nsearch.entries = function(fn) { fn=fn || noop; var i=0,k,v,r,res=[]; for(k in ncache) { v = ncache[k]; r = fn(k,v,i++); if (r) res.push(r); } return res; }
+nsearch.entries = function(fn) { fn=fn || noop; var i=0,k,v,r,res=[]; for(k in ncache) { v = ncache[k]; r = fn(k,v,i++,res.length); if (r) res.push(r); } return res; }
+
+/** Search by property in opts, with maximum of n results. Example: nsearch.find({keywords:/(watch|coffee)/i,description:/watch|cake/i}, 100) */
+nsearch.find = function (opts,n) { 
+  return nsearch.last = nsearch.entries( function(title,entry,i,len) {
+	if (null != n && len >= n) return false;
+    for (opt in opts) {
+	  if (null == entry[opt]) return false;	  
+	  var wanted = opts[opt];
+	  var curValue = entry[opt];
+	  if (typeof curValue !== "string") curValue = JSON.stringify(curValue) || 'NULL';
+	  if (null == curValue.match(wanted) ) return false;
+    }
+    return [title,entry.description, entry.keywords].join(" : ");
+  });
+}
 
 /** Search by Keyword. Accepts Regular Expressions such as /jQuery|api/i. */
 nsearch.keywords = function(q) { return nsearch.last = nsearch.entries(function(key,entry) { return entry.keywords && String(entry.keywords).match(q) && [key, entry.keywords.toString().replace(q, "[$&]"), entry.description].join(" : ") }) }
@@ -93,6 +113,24 @@ nsearch.author = function(q) { return nsearch.last = nsearch.entries(function(ke
 
 /** Web address of last result. */
 nsearch.web = function(d) { var r=nsearch.details(d).repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
+
+nsearch.len = function() { return nsearch.last.length }
+
+nsearch.limit = function(m) { nsearch._limit = m-0 || nsearch._limit || 42; if (nsearch.len() > nsearch._limit) nsearch.last.length = nsearch._limit; return nsearch._limit; }
+
+nsearch.help = function (ra) {
+	return ["COMMAND OPTIONS",
+		"search, author, or keywords to get results",
+		"len to display number of results", 
+		"num to display results with number",
+		"limit to limit number of results returned",
+		"next and prev to go through results",
+		"web to display url of repo",
+		"readme to display README file",
+		"details to display release details",
+		"TAB to list available commands"
+		];
+}
 
 nsearch.search = nsearch
 
