@@ -61,12 +61,19 @@ rl.on('line', function(cmd) {
   run(cmd.trim());
 }).on('close', function() {
   // only gets triggered by ^C or ^D
-  sys.puts('goodbye!');
+  sys.puts(colorify('[goodbye]!', 'red'));
   process.exit(0);
-});
+})
 
-// var unjson = function (k,e) { if(typeof e=="string"&&e[0]=="/") return toRegExp(e);  return e; }
-// var toRegExp = function (e) { var a=e.split("/"); return new RegExp(a[1],a[2]); }
+function handleError(e) {
+    sys.puts(colorify('[Error]!', 'red'));
+	console.warn(e);
+	nsearch.error = e.stack
+}
+process.on('uncaughtException', handleError);
+
+// var unjson = function (key,re) { if(typeof re=="string"&&re[0]=="/") return toRegExp(re);  return re; }
+// var toRegExp = function (re) { var a=re.split("/"); return new RegExp(a[1],a[2]); }
 // RegExp.prototype.toJSON = RegExp.prototype.toString
 // require("assert").deepEqual( JSON.parse(JSON.stringify({ author: /Stein/i, description: /^[^H]/ }),unjson),  { author: /Stein/i, description: /^[^H]/ }, "oops")
 
