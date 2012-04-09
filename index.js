@@ -85,14 +85,19 @@ nsearch.authorCount = function authorCount(n) {
 }
 
 /** Show Readme if available */
-nsearch.readme = function (d) { var item = nsearch.details(d); process.stdout.write(item.description+'\n'); if (item.readme) process.stdout.write(item.readme + '\n'); return nsearch.next; }
+nsearch.readme = function () { 
+	var item = nsearch.details(); process.stdout.write(item.description+'\n'); if (item.readme) process.stdout.write(item.readme + '\n'); return nsearch.next; 
+}
 
 function noop(k,v,i,len) { return i < 100 && v; }
 
-nsearch.entries = function(fn) { fn=fn || noop; var i=0,k,v,r,res=[]; for(k in ncache) { v = ncache[k]; r = fn(k,v,i++,res.length); if (r) res.push(r); } return res; }
+nsearch.entries = function(fn) { 
+	fn=fn || noop; var i=0,k,v,r,res=[]; for(k in ncache) { v = ncache[k]; r = fn(k,v,i++,res.length); if (r) res.push(r); } return res; 
+}
 
 /** Search by property in opts, with maximum of n results. Example: nsearch.find({keywords:/(watch|coffee)/i,description:/watch|cake/i}, 100) */
 nsearch.find = function (opts,n) { 
+  if (opts && opts[0] && "string" === typeof opts[0]) { opts = JSON.parse(opts[0]); n = opts.n; delete opts['n']; }
   return nsearch.last = nsearch.entries( function(title,entry,i,len) {
 	if (null != n && len >= n) return false;
     for (opt in opts) {
@@ -113,7 +118,7 @@ nsearch.keywords = function(q) { return nsearch.last = nsearch.entries(function(
 nsearch.author = function(q) { return nsearch.last = nsearch.entries(function(key,entry) { var a=getAuthor(entry); return a && a.name && String(a.name).match(q) && [key, a.name.replace(q, "[$&]"), entry.description].join(" : ") }) }
 
 /** Web address of last result. */
-nsearch.web = function(d) { var r=nsearch.details(d).repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
+nsearch.web = function() { var r=nsearch.details().repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
 
 /** Length of last results */
 nsearch.len = function() { return nsearch.last.length }
