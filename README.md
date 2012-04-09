@@ -1,6 +1,7 @@
 # npm-search
 
  * Is `npm search` too slow for you? 
+ * Want to search npm list while offline?
  * Don't mind slightly out of date information?
  * Want to be able to "drill-down" to get more details?
 

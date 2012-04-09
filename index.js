@@ -4,6 +4,7 @@
  * # npm-search
  * 
  * * Is `npm search` too slow for you? 
+ * * Want to search npm list while offline?
  * * Don't mind slightly out of date information?
  * * Want to be able to "drill-down" to get more details?
  * 
@@ -114,10 +115,13 @@ nsearch.author = function(q) { return nsearch.last = nsearch.entries(function(ke
 /** Web address of last result. */
 nsearch.web = function(d) { var r=nsearch.details(d).repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
 
+/** Length of last results */
 nsearch.len = function() { return nsearch.last.length }
 
+/** Limit length of last results */
 nsearch.limit = function(m) { nsearch._limit = m-0 || nsearch._limit || 42; if (nsearch.len() > nsearch._limit) nsearch.last.length = nsearch._limit; return nsearch._limit; }
 
+/** Usage */
 nsearch.help = function (ra) {
 	return ["COMMAND OPTIONS",
 		"search, author, or keywords to get results",
@@ -132,6 +136,7 @@ nsearch.help = function (ra) {
 		];
 }
 
+/** Search by module name or description */
 nsearch.search = nsearch
 
 // cli = -> while readline : grab(line)
