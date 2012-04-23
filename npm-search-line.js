@@ -56,9 +56,11 @@ function run(line) {
 
 sys.puts('Search for npm packages. Tab to autocomplete.')
 rl = readline.createInterface(process.stdin, process.stdout, completer)
+rl.prompt();
 
 rl.on('line', function(cmd) {
   run(cmd.trim());
+  rl.prompt();
 }).on('close', function() {
   // only gets triggered by ^C or ^D
   sys.puts(colorify('[goodbye]!', 'red'));
