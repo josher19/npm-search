@@ -11,6 +11,14 @@ and which has over 8000 entries (as of March 2012).
 
 ## Usage:
 
+```sh
+bin/npmsearch shell
+> h[TAB]
+> help
+```
+
+or in node:
+
 ```javascript
 nsearch=require('./npm-grep')
 
@@ -46,4 +54,4 @@ nsearch.keywords(/api|jQuery/i)
 
 ## Dependencies 
 
-None
+None! (`readline` and `util` come with node)
