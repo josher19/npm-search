@@ -1,4 +1,5 @@
 /** npm-search-line is a simple npm-search shell, using the node readline library. */
+process.openStdin().write("Loading data ...")
 
 var readline = require('readline'),
     nsearch = require('./index.js'), 

@@ -52,6 +52,12 @@ nsearch.keywords(/api|jQuery/i)
 
 ```
 
+## About
+
+This started when my connection to the npm servers was very slow.
+Created some one-line functions in coffee-script to load and display results
+(see npm-search-mini.js) and then started adding new features.
+
 ## Dependencies 
 
 None! (`readline` and `util` come with node)
