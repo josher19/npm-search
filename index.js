@@ -118,7 +118,7 @@ nsearch.keywords = function(q) { return nsearch.last = nsearch.entries(function(
 nsearch.author = function(q) { return nsearch.last = nsearch.entries(function(key,entry) { var a=getAuthor(entry); return a && a.name && String(a.name).match(q) && [key, a.name.replace(q, "[$&]"), entry.description].join(" : ") }) }
 
 /** Web address of last result. */
-nsearch.web = function() { var r=nsearch.details().repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'http://').replace(".git", "").replace('.com:', ".com/") }
+nsearch.web = function() { var r=nsearch.details().repository; return r && (r.url||r+"").replace(/^git[:@]\/?\/?/, 'https://').replace(".git", "").replace('.com:', ".com/") }
 
 /** Length of last results */
 nsearch.len = function() { return nsearch.last.length }
